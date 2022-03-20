@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 
-const contractAddress = "0xeA237CA3975219d51B1290Cc1020cCA7833a4f58";
+const contractAddress = "0x1c89A807bBc003A17F7F3c695F57B684Baba24db";
 
 task("transfer", "--CUSTOM-- Transfer YEN from sender balance to other address")
   .addParam("receiver", "Receiver address")

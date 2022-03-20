@@ -19,7 +19,7 @@ contract Token {
         _totalSupply = totalSupplyInit;
         _decimals = 18;
         owner = msg.sender;
-        _balances[msg.sender] = 100;
+        _balances[msg.sender] = totalSupplyInit;
     }
 
     function decimals() public view returns (uint8) {

@@ -10,12 +10,13 @@ describe("My awesome yena token contract", function () {
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
   let addrs: SignerWithAddress[];
+  const totalSupply = 1000000;
 
   beforeEach(async function () {
     Token = await ethers.getContractFactory("Token");
     [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
-    token = await Token.deploy(1000000);
+    token = await Token.deploy(totalSupply);
   });
 
   describe("Deployment", function () {
@@ -35,12 +36,12 @@ describe("My awesome yena token contract", function () {
       expect(await token.decimals()).to.equal(18);
     });
 
-    it("Should set the total supply of tokens to 1000000", async function () {
-      expect(await token.totalSupply()).to.equal(1000000);
+    it(`Should set the total supply of tokens to ${totalSupply}`, async function () {
+      expect(await token.totalSupply()).to.equal(totalSupply);
     });
 
-    it("Should set initial owner balance to 100", async function () {
-      expect(await token.balanceOf(owner.address)).to.equal(100);
+    it(`Should set initial owner balance to ${totalSupply}`, async function () {
+      expect(await token.balanceOf(owner.address)).to.equal(totalSupply);
     });
   });
 
@@ -48,7 +49,7 @@ describe("My awesome yena token contract", function () {
     it("Should transfer tokens from one address to another address", async function () {
       await token.transfer(addr1.address, 10);
 
-      expect(await token.balanceOf(owner.address)).to.equal(90);
+      expect(await token.balanceOf(owner.address)).to.equal(totalSupply - 10);
       expect(await token.balanceOf(addr1.address)).to.equal(10);
     });
 
@@ -105,7 +106,7 @@ describe("My awesome yena token contract", function () {
       // arrd1 allows addr2 to spend 50 YEN
       await token.connect(addr1).approve(addr2.address, 50);
 
-      // act: addr2 transfers 20 YEN from addr1
+      // act: addr2 transfers 50 YEN from addr1
       await expect(
         token.connect(addrs[0]).transferFrom(addr1.address, addr2.address, 50)
       ).to.be.revertedWith("This transfer is not permitted");
@@ -136,7 +137,7 @@ describe("My awesome yena token contract", function () {
       await token.mint(addr1.address, 10);
 
       expect(await token.balanceOf(addr1.address)).to.equal(10);
-      expect(await token.totalSupply()).to.equal(1000010);
+      expect(await token.totalSupply()).to.equal(totalSupply + 10);
     });
 
     it("Should not allow non-owner to mint", async function () {
@@ -161,7 +162,7 @@ describe("My awesome yena token contract", function () {
       await token.burn(addr1.address, 10);
 
       expect(await token.balanceOf(addr1.address)).to.equal(10);
-      expect(await token.totalSupply()).to.equal(999990);
+      expect(await token.totalSupply()).to.equal(totalSupply - 10);
     });
 
     it("Should not allow non-owner to burn", async function () {
